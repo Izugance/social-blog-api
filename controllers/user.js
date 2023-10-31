@@ -68,7 +68,7 @@ const followUser = asyncHandler(async (req, res) => {
   });
   res
     .status(StatusCodes.CREATED)
-    .json({ msg: `User '{following}' followed user '{followed}'` });
+    .json({ msg: `User '${following}' followed user '${followed}'` });
 });
 
 /** DELETE */
@@ -82,7 +82,7 @@ const unfollowUser = asyncHandler(async (req, res) => {
   });
   res
     .status(StatusCodes.OK)
-    .json({ msg: `User '{userId}' unfollowed user '{otherUserId}'` });
+    .json({ msg: `User '${following}' unfollowed user '${followed}'` });
 });
 
 /** GET */
