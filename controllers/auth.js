@@ -22,7 +22,7 @@ const login = asyncHandler(async (req, res) => {
   if (!(user && user.comparePassword(password)))
     throw new UnauthorizedError("Invalid credentials");
 
-  const token = user.genJWT();
+  const token = await user.genJWT();
   res.status(StatusCodes.OK).json({ userId: user._id, token });
 });
 
