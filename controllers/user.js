@@ -3,6 +3,7 @@ import { StatusCodes } from "http-status-codes";
 
 import { User } from "../models/User.js";
 import { Follow } from "../models/Follow.js";
+import { Post } from "../models/Blog.js";
 import { getPaginationParams } from "./utils/getPaginationParams.js";
 
 /** GET */
@@ -13,8 +14,8 @@ const getUserByEmail = asyncHandler(async (req, res) => {
 
 /** GET */
 const getUserPosts = asyncHandler(async (req, res) => {
-  const page = Number(req.query.page);
-  const _limit = Number(req.query.limit);
+  const page = Number(req.query.page) || 1;
+  const _limit = Number(req.query.limit) || 10;
   const { skip, limit } = getPaginationParams(_limit, page);
   const posts = await Post.find({ _id: req.params.userId })
     .skip(skip)
@@ -24,17 +25,25 @@ const getUserPosts = asyncHandler(async (req, res) => {
 
 /** GET */
 const getUserFollowing = asyncHandler(async (req, res) => {
-  const page = Number(req.query.page);
-  const _limit = Number(req.query.limit);
+  const page = Number(req.query.page) || 1;
+  const _limit = Number(req.query.limit) || 10;
   const { skip, limit } = getPaginationParams(_limit, page, 25, 50);
-  const following = await User.getUserFollowing(req.params.userId, skip, limit);
-  res.status(StatusCodes.OK).json({ following });
+  try {
+    const following = await User.getUserFollowing(
+      req.params.userId,
+      skip,
+      limit
+    );
+    res.status(StatusCodes.OK).json({ following });
+  } catch (error) {
+    console.log(error);
+  }
 });
 
 /** GET */
 const getUserFollowers = asyncHandler(async (req, res) => {
-  const page = Number(req.query.page);
-  const _limit = Number(req.query.limit);
+  const page = Number(req.query.page) || 1;
+  const _limit = Number(req.query.limit) || 10;
   const { skip, limit } = getPaginationParams(_limit, page, 25, 50);
   const followers = await User.getUserFollowers(req.params.userId, skip, limit);
   res.status(StatusCodes.OK).json({ followers });
@@ -42,8 +51,8 @@ const getUserFollowers = asyncHandler(async (req, res) => {
 
 /** GET */
 const getUserLikedPosts = asyncHandler(async (req, res) => {
-  const page = Number(req.query.page);
-  const _limit = Number(req.query.limit);
+  const page = Number(req.query.page) || 10;
+  const _limit = Number(req.query.limit) || 10;
   const { skip, limit } = getPaginationParams(_limit, page, 25, 50);
   const likes = await User.getUserLikedPosts(req.params.userId, skip, limit);
   res.status(StatusCodes.OK).json({ likes });
