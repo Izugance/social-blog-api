@@ -69,7 +69,7 @@ const commentSchema = new mongoose.Schema(
 );
 
 // This seems like a silly idea. Improve.
-postSchema.static.updateComments = async function (postId) {
+postSchema.statics.updateComments = async function (postId) {
   const tenRecentComments = await Comment.find({ post: postId })
     .sort({ createdAt: -1 })
     .limit(10)
