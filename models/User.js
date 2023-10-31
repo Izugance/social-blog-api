@@ -58,7 +58,7 @@ userSchema.methods.comparePassword = async function (password) {
   return await bcrypt.compare(password, this.password);
 };
 
-userSchema.static.getUserFollowing = async (userId, skip, limit) => {
+userSchema.statics.getUserFollowing = async (userId, skip, limit) => {
   const following = await Follow.find({ following: userId })
     .skip(skip)
     .limit(limit)
@@ -66,7 +66,7 @@ userSchema.static.getUserFollowing = async (userId, skip, limit) => {
   return following;
 };
 
-userSchema.static.getUserFollowers = async (userId, skip, limit) => {
+userSchema.statics.getUserFollowers = async (userId, skip, limit) => {
   const followers = await Follow.find({ followed: userId })
     .skip(skip)
     .limit(limit)
@@ -78,7 +78,7 @@ userSchema.static.getUserFollowers = async (userId, skip, limit) => {
 // a requirement, unifying the 'LikedPost' and 'LikedComment' tables into one
 // (say, 'Like') could be better to limit the number of db queries to get all
 // user likes.
-userSchema.static.getUserLikedPosts = async (
+userSchema.statics.getUserLikedPosts = async (
   userId,
   skip = null,
   limit = null
