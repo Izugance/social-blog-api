@@ -63,7 +63,7 @@ userSchema.static.getUserFollowing = async (userId, skip, limit) => {
     .skip(skip)
     .limit(limit)
     .select("followed");
-  res.status(StatusCodes.OK).json({ following });
+  return following;
 };
 
 userSchema.static.getUserFollowers = async (userId, skip, limit) => {
@@ -71,7 +71,7 @@ userSchema.static.getUserFollowers = async (userId, skip, limit) => {
     .skip(skip)
     .limit(limit)
     .select("following");
-  res.status(StatusCodes.OK).json({ followers });
+  return followers;
 };
 
 // We assume that a user doesn't care about liked comments. If the reverse is
