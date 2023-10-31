@@ -15,13 +15,13 @@ export default (err, req, res, next) => {
     error.statusCode = StatusCodes.BAD_REQUEST;
   } else if (err.name === "CastError") {
     error.msg =
-      `Could not find the requested resource with id ${err.value}.` +
+      `Could not find the requested resource with id ${err.value}. ` +
       "Please verify the id and try again";
     error.statusCode = StatusCodes.NOT_FOUND;
   } else if (err.code === 11000) {
     // Duplicate object creation error.
     error.msg =
-      `Attempt at creating duplicate objects with unique` +
+      `Attempt at creating duplicate objects with unique ` +
       `field '${Object.keys(err.keyValue)}'`;
     error.statusCode = StatusCodes.BAD_REQUEST;
   }
