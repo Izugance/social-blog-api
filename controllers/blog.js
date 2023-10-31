@@ -12,8 +12,8 @@ import { getPaginationParams } from "./utils/getPaginationParams.js";
 const getAllPosts = asyncHandler(async (req, res) => {
   // Add query supports for posts created in a particular date.
   // Send data to indicate next page, if any.
-  const page = Number(req.query.page);
-  const _limit = Number(req.query.limit);
+  const page = Number(req.query.page) || 1;
+  const _limit = Number(req.query.limit) || 10;
   const { skip, limit } = getPaginationParams(_limit, page);
   const posts = await Post.find().skip(skip).limit(limit);
   res.status(StatusCodes.OK).json({ posts });
