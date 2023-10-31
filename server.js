@@ -18,6 +18,7 @@ import userRouter from "./routes/user.js";
 const app = express();
 
 // -----System health-----
+app.use(express.json());
 app.set("trust proxy", 1);
 app.use(
   // What window algorithm do they use?
