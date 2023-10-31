@@ -4,7 +4,7 @@ import "dotenv/config";
 import { UnauthorizedError } from "../errors/index.js";
 
 export default async (req, res, next) => {
-  const authHeader = req.body.authorization;
+  const authHeader = req.headers.authorization;
   if (!(authHeader && authHeader.startsWith("Bearer "))) {
     throw new UnauthorizedError("Invalid authorization header structure");
   }
