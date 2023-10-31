@@ -7,7 +7,7 @@ import { UnauthorizedError, BadRequestError } from "../errors/index.js";
 /** POST */
 const register = asyncHandler(async (req, res) => {
   const user = await User.create(req.body);
-  const token = user.genJWT();
+  const token = await user.genJWT();
   res.status(StatusCodes.CREATED).json({ userId: user._id, token });
 });
 
