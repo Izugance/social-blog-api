@@ -62,7 +62,7 @@ userSchema.statics.getUserFollowing = async (userId, skip, limit) => {
   const following = await Follow.find({ following: userId })
     .skip(skip)
     .limit(limit)
-    .select("followed");
+    .select("followed -_id");
   return following;
 };
 
@@ -70,7 +70,7 @@ userSchema.statics.getUserFollowers = async (userId, skip, limit) => {
   const followers = await Follow.find({ followed: userId })
     .skip(skip)
     .limit(limit)
-    .select("following");
+    .select("following -_id");
   return followers;
 };
 
