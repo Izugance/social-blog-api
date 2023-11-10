@@ -7,7 +7,7 @@ const likedCommentSchema = new mongoose.Schema(
       type: mongoose.Types.ObjectId,
       ref: "User",
     },
-    post: {
+    comment: {
       type: mongoose.Types.ObjectId,
       ref: "Comment",
     },
@@ -16,6 +16,6 @@ const likedCommentSchema = new mongoose.Schema(
 );
 
 // Make them unique together.
-likedCommentSchema.index({ user: 1, post: 1 }, { unique: true });
+likedCommentSchema.index({ user: 1, comment: 1 }, { unique: true });
 
 export const LikedComment = mongoose.model("LikedComment", likedCommentSchema);
