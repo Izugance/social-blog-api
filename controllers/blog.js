@@ -31,11 +31,11 @@ const createPost = asyncHandler(async (req, res) => {
 
 /** GET */
 const getPost = asyncHandler(async (req, res) => {
-  const post = await Post.findOne({ _id: req.params.postId });
+  const post = await Post.findById(req.params.postId);
 
   if (!post) {
     throw new ResourceNotFoundError(
-      `Comment with id ${req.params.postId} does not exist`
+      `Post with id ${req.params.postId} does not exist`
     );
   }
 
@@ -96,7 +96,7 @@ const likePost = asyncHandler(async (req, res) => {
   const userId = req.user.userId;
   const postId = req.params.postId;
   const connection = await connectDB();
-  const session = connection.startSession();
+  const session = await connection.startSession();
 
   await session.withTransaction(async () => {
     const post = await Post.findByIdAndUpdate(postId, {
@@ -123,7 +123,7 @@ const unlikePost = asyncHandler(async (req, res) => {
   const userId = req.user.userId;
   const postId = req.params.postId;
   const connection = await connectDB();
-  const session = connection.startSession();
+  const session = await connection.startSession();
 
   await session.withTransaction(async () => {
     const post = await Post.findByIdAndUpdate(postId, {
@@ -183,7 +183,7 @@ const getCommentComments = asyncHandler(async (req, res) => {
 /** POST */
 const createPostComment = asyncHandler(async (req, res) => {
   const connection = await connectDB();
-  const session = connection.startSession();
+  const session = await connection.startSession();
 
   await session.withTransaction(async () => {
     const comment = await Comment.create({
@@ -192,7 +192,6 @@ const createPostComment = asyncHandler(async (req, res) => {
       post: req.params.postId,
       body: req.body.body,
     });
-
     // Update comments for post. Can we use an insertion sort mechanism to
     // make this cleaner?
     await Post.updateComments(req.params.postId);
@@ -234,7 +233,7 @@ const getComment = asyncHandler(async (req, res) => {
 /** DELETE */
 const deleteComment = asyncHandler(async (req, res) => {
   const connection = await connectDB();
-  const session = connection.startSession();
+  const session = await connection.startSession();
 
   await session.withTransaction(async () => {
     const comment = await Comment.findOneAndRemove({
@@ -273,7 +272,7 @@ const likeComment = asyncHandler(async (req, res) => {
   const userId = req.user.userId;
   const commentId = req.params.commentId;
   const connection = await connectDB();
-  const session = connection.startSession();
+  const session = await connection.startSession();
 
   await session.withTransaction(async () => {
     const comment = await Comment.findByIdAndUpdate(commentId, {
@@ -299,7 +298,7 @@ const unlikeComment = asyncHandler(async (req, res) => {
   const userId = req.user.userId;
   const commentId = req.params.commentId;
   const connection = await connectDB();
-  const session = connection.startSession();
+  const session = await connection.startSession();
 
   await session.withTransaction(async () => {
     const comment = await Post.findByIdAndUpdate(commentId, {
