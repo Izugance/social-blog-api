@@ -22,7 +22,7 @@ export default (err, req, res, next) => {
     // Duplicate object creation error.
     error.msg =
       `Attempt at creating duplicate objects with unique ` +
-      `field '${Object.keys(err.keyValue)}'`;
+      `field(s) '${Object.keys(err.keyValue)}'`;
     error.statusCode = StatusCodes.BAD_REQUEST;
   }
 
