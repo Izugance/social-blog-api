@@ -99,6 +99,10 @@ const likePost = asyncHandler(async (req, res) => {
   const session = await connection.startSession();
 
   await session.withTransaction(async () => {
+    // Raises an exception if a duplicate liked post is created.
+    // This arrangement guards against multiple increments from a user.
+    await LikedPost.create({ user: userId, post: postId });
+
     const post = await Post.findByIdAndUpdate(postId, {
       $inc: { likes: 1 },
     });
@@ -106,9 +110,6 @@ const likePost = asyncHandler(async (req, res) => {
     if (!post) {
       throw new ResourceNotFoundError(`Post ${postId} does not exist`);
     }
-
-    // Raises an exception if a duplicate liked post is created.
-    await LikedPost.create({ user: userId, post: postId });
 
     res
       .status(StatusCodes.OK)
@@ -126,17 +127,22 @@ const unlikePost = asyncHandler(async (req, res) => {
   const session = await connection.startSession();
 
   await session.withTransaction(async () => {
-    const post = await Post.findByIdAndUpdate(postId, {
-      $inc: { likes: -1 },
-    });
-
-    if (!post) {
-      throw new ResourceNotFoundError(`Post ${postId} does not exist`);
-    }
-
-    await LikedPost.findOneAndDelete({
+    // Attempting to delete the associated LikedPost first guards against
+    // decrementing likes beyond 0.
+    const likedPost = await LikedPost.findOneAndDelete({
       user: userId,
       post: postId,
+    });
+
+    if (!likedPost) {
+      throw new ResourceNotFoundError(
+        `User ${req.user.userId} has not liked post ${postId}`
+      );
+    }
+
+    // Decrement post likes.
+    await Post.findByIdAndUpdate(postId, {
+      $inc: { likes: -1 },
     });
 
     res
@@ -214,15 +220,11 @@ const createCommentComment = asyncHandler(async (req, res) => {
 
 /** GET */
 const getComment = asyncHandler(async (req, res) => {
-  const comment = await Comment.findOne({
-    _id: req.params.commentId,
-    poster: req.user.userId,
-  });
+  const comment = await Comment.findById(req.params.commentId);
 
   if (!comment) {
     throw new ResourceNotFoundError(
-      `Comment with id ${req.params.commentId} does not exist for user ${
-        req.user.userId || "anonymous"
+      `Comment with id ${req.params.commentId} does not exist
       }`
     );
   }
@@ -301,18 +303,21 @@ const unlikeComment = asyncHandler(async (req, res) => {
   const session = await connection.startSession();
 
   await session.withTransaction(async () => {
-    const comment = await Post.findByIdAndUpdate(commentId, {
-      $inc: { likes: -1 },
+    // Attempting to delete the associated LikedComment first guards against
+    // decrementing likes beyond 0.
+    const likedComment = await LikedComment.findOneAndDelete({
+      user: userId,
+      comment: commentId,
     });
 
-    if (!comment) {
-      throw new ResourceNotFoundError(`Comment ${commentId} does not exist`);
+    if (!likedComment) {
+      throw new ResourceNotFoundError(
+        `User ${req.user.userId} has not liked comment ${commentId}`
+      );
     }
 
-    // Delete the associated LikedComment.
-    await LikedComment.findOneAndDelete({
-      user: userId,
-      post: commentId,
+    await Comment.findByIdAndUpdate(commentId, {
+      $inc: { likes: -1 },
     });
 
     res
