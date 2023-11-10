@@ -1,5 +1,5 @@
-export class BaseAPIError extends Error {
+export class BaseAPIError {
   constructor(msg) {
-    super(msg);
+    this.msg = msg;
   }
 }
