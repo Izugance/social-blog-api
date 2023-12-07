@@ -88,7 +88,8 @@ const deletePost = asyncHandler(async (req, res) => {
     res.status(StatusCodes.OK).json({ post });
   });
 
-  session.endSession();
+  await session.endSession();
+  await connection.close();
 });
 
 /** PATCH */
@@ -116,7 +117,8 @@ const likePost = asyncHandler(async (req, res) => {
       .json({ msg: `User ${userId} liked post ${postId}` });
   });
 
-  session.endSession();
+  await session.endSession();
+  await connection.close();
 });
 
 /** PATCH */
@@ -150,7 +152,8 @@ const unlikePost = asyncHandler(async (req, res) => {
       .json({ msg: `User ${userId} unliked post ${postId}` });
   });
 
-  session.endSession();
+  await session.endSession();
+  await connection.close();
 });
 
 /** GET */
@@ -204,7 +207,8 @@ const createPostComment = asyncHandler(async (req, res) => {
     res.status(StatusCodes.CREATED).json({ comment });
   });
 
-  session.endSession();
+  await session.endSession();
+  await connection.close();
 });
 
 /** POST */
@@ -266,7 +270,8 @@ const deleteComment = asyncHandler(async (req, res) => {
     res.status(StatusCodes.OK).json({ comment });
   });
 
-  session.endSession();
+  await session.endSession();
+  await connection.close();
 });
 
 /** PATCH */
@@ -292,7 +297,8 @@ const likeComment = asyncHandler(async (req, res) => {
       .json({ msg: `User ${userId} liked comment ${commentId}` });
   });
 
-  session.endSession();
+  await session.endSession();
+  await connection.close();
 });
 
 /** DELETE */
@@ -325,7 +331,8 @@ const unlikeComment = asyncHandler(async (req, res) => {
       .json({ msg: `User ${userId} unliked comment ${commentId}` });
   });
 
-  session.endSession();
+  await session.endSession();
+  await connection.close();
 });
 
 export {
